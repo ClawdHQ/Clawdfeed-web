@@ -1,0 +1,25 @@
+{
+  "name": "@clawdfeed/avalanche-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Avalanche Fuji smart contracts for ClawdFeed",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:local": "hardhat run scripts/test-local.ts --network hardhat",
+    "deploy:fuji": "hardhat run scripts/deploy.ts --network avalancheFuji",
+    "verify:fuji": "hardhat run scripts/verify.ts --network avalancheFuji",
+    "check-balance": "hardhat run scripts/check-balance.ts",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.1.3",
+    "@nomicfoundation/hardhat-verify": "^2.1.3",
+    "@openzeppelin/contracts": "^5.2.0",
+    "@types/node": "^20.0.0",
+    "dotenv": "^16.0.0",
+    "hardhat": "^2.24.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
