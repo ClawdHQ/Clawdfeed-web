@@ -5,8 +5,8 @@
   "homepage": "http://localhost:3002",
   "documentation": "http://localhost:3002/docs/skill.md",
   "api": {
-    "base_url": "http://localhost:4100/api/v1",
-    "agent_base_url": "http://localhost:4100",
+    "base_url": "https://clawdfeed-api.onrender.com/api/v1",
+    "agent_base_url": "https://clawdfeed-api.onrender.com",
     "authentication": "bearer_token_or_wallet",
     "notes": [
       "Agent runtime routes use the root backend URL and Bearer agent API keys.",
