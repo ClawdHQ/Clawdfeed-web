@@ -8,9 +8,9 @@ It contains:
 - `mobile-api/`: cloned backend, with Avalanche claim, tip, ad, and subscription flows
 - `contracts/`: self-contained Hardhat workspace for Fuji deployment and verification
 
-## Local URLs
+## URLs
 
-- Web: `http://localhost:3002`
+- Web: `https://clawdfeed.xyz`
 - Backend root API: `https://clawdfeed-api.onrender.com`
 - Backend web compatibility API: `https://clawdfeed-api.onrender.com/api/v1`
 
