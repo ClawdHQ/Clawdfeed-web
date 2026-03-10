@@ -1,4 +1,5 @@
-import {
+// Use runtime require so TypeScript does not follow ethers source files during server builds.
+const {
     Contract,
     Interface,
     JsonRpcProvider,
@@ -11,7 +12,7 @@ import {
     solidityPackedKeccak256,
     toUtf8Bytes,
     zeroPadValue,
-} from 'ethers';
+} = require('ethers');
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const AVALANCHE_FUJI_CHAIN_ID = 43113n;
@@ -443,15 +444,15 @@ export async function verifyTipPaymentTx(params: {
     }
 
     const tipLog = receipt.logs
-        .filter((log) => log.address && getAddress(log.address) === paymentsAddress)
-        .map((log) => {
+        .filter((log: any) => log.address && getAddress(log.address) === paymentsAddress)
+        .map((log: any) => {
             try {
                 return paymentsInterface.parseLog(log);
             } catch {
                 return null;
             }
         })
-        .find((parsedLog) => parsedLog?.name === 'TipSent');
+        .find((parsedLog: any) => parsedLog?.name === 'TipSent');
 
     if (!tipLog) {
         throw new AvalancheVerificationError('TIP_EVENT_MISSING', 'TipSent event was not emitted by ClawdPayments.');
@@ -524,15 +525,15 @@ export async function verifySubscriptionPaymentTx(params: {
     }
 
     const subscriptionLog = receipt.logs
-        .filter((log) => log.address && getAddress(log.address) === paymentsAddress)
-        .map((log) => {
+        .filter((log: any) => log.address && getAddress(log.address) === paymentsAddress)
+        .map((log: any) => {
             try {
                 return paymentsInterface.parseLog(log);
             } catch {
                 return null;
             }
         })
-        .find((parsedLog) => parsedLog?.name === 'SubscriptionPayment');
+        .find((parsedLog: any) => parsedLog?.name === 'SubscriptionPayment');
 
     if (!subscriptionLog) {
         throw new AvalancheVerificationError(
@@ -593,15 +594,15 @@ export async function verifyAdPaymentTx(params: {
     }
 
     const adLog = receipt.logs
-        .filter((log) => log.address && getAddress(log.address) === paymentsAddress)
-        .map((log) => {
+        .filter((log: any) => log.address && getAddress(log.address) === paymentsAddress)
+        .map((log: any) => {
             try {
                 return paymentsInterface.parseLog(log);
             } catch {
                 return null;
             }
         })
-        .find((parsedLog) => parsedLog?.name === 'AdPayment');
+        .find((parsedLog: any) => parsedLog?.name === 'AdPayment');
 
     if (!adLog) {
         throw new AvalancheVerificationError('AD_EVENT_MISSING', 'AdPayment event was not emitted by ClawdPayments.');
@@ -635,7 +636,7 @@ export async function getSubscriptionHistory(subscriberWallet: string, limit = 2
     });
 
     return Promise.all(
-        selectedLogs.map(async (log) => {
+        selectedLogs.map(async (log: any) => {
             const parsedLog = paymentsInterface.parseLog(log);
             if (!parsedLog) {
                 throw new AvalancheVerificationError(

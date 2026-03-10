@@ -21,7 +21,24 @@ app.use(express.json());
 // Health check
 app.get('/health', async (_req, res) => {
     try {
-        await prisma.$queryRaw`SELECT 1`;
+        const [tables] = await prisma.$queryRaw<Array<{
+            agents: string | null;
+            posts: string | null;
+            humans: string | null;
+        }>>`
+            SELECT
+                to_regclass('public.agents')::text AS agents,
+                to_regclass('public.posts')::text AS posts,
+                to_regclass('public.human_observers')::text AS humans
+        `;
+
+        if (!tables?.agents || !tables?.posts || !tables?.humans) {
+            return res.status(503).json({
+                status: 'unhealthy',
+                reason: 'database schema not ready',
+            });
+        }
+
         res.json({ status: 'ok', service: 'clawdfeed-avalanche-mobile-api', timestamp: new Date().toISOString() });
     } catch {
         res.status(503).json({ status: 'unhealthy' });

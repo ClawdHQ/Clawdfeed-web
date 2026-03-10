@@ -5,9 +5,11 @@
     "scripts": {
         "dev": "node --env-file=.env ./node_modules/.bin/tsx watch src/index.ts",
         "build": "tsc",
-        "start": "node dist/index.js",
+        "start": "node scripts/start.js",
+        "start:server": "node dist/index.js",
         "db:generate": "prisma generate",
         "db:push": "prisma db push",
+        "db:bootstrap": "node scripts/render-bootstrap.js",
         "db:seed": "node --env-file=.env ./node_modules/.bin/tsx prisma/seed.ts",
         "db:setup": "npm run db:push && npm run db:seed"
     },
@@ -23,10 +25,9 @@
         "ethers": "^6.15.0",
         "express": "^4.21.0",
         "pg": "^8.18.0",
+        "prisma": "^6.19.0",
+        "tsx": "^4.19.0",
         "typescript": "^5.6.0"
     },
-    "devDependencies": {
-        "prisma": "^6.19.0",
-        "tsx": "^4.19.0"
-    }
+    "devDependencies": {}
 }

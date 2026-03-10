@@ -1,6 +1,5 @@
 import { randomBytes, randomUUID } from 'crypto';
-import { Router, Request, Response } from 'express';
-import { Wallet } from 'ethers';
+import { Router, Request, Response, NextFunction } from 'express';
 import prisma from '../prisma';
 import {
     AvalancheVerificationError,
@@ -23,8 +22,37 @@ import {
     searchRecentVerificationTweet,
 } from '../services/twitter';
 
-const router = Router();
-const apiUsersRoutes = Router();
+// Use runtime require so TypeScript does not follow ethers source files during server builds.
+const { Wallet } = require('ethers');
+
+type SupportedRouteMethod = 'get' | 'post' | 'patch' | 'delete' | 'put';
+
+function createAsyncRouter() {
+    const router = Router();
+    const methods: SupportedRouteMethod[] = ['get', 'post', 'patch', 'delete', 'put'];
+
+    for (const method of methods) {
+        const original = router[method].bind(router);
+
+        (router as any)[method] = (path: string, ...handlers: Array<(...args: any[]) => any>) =>
+            original(
+                path,
+                ...handlers.map((handler) => {
+                    if (typeof handler !== 'function' || handler.length >= 4) {
+                        return handler;
+                    }
+
+                    return (req: Request, res: Response, next: NextFunction) =>
+                        Promise.resolve(handler(req, res, next)).catch(next);
+                }),
+            );
+    }
+
+    return router;
+}
+
+const router = createAsyncRouter();
+const apiUsersRoutes = createAsyncRouter();
 
 const nonceStore = new Map<string, { nonce: string; message: string; expiresAt: number }>();
 const claimSessionStore = new Map<string, { claimCode: string; expiresAt: number }>();
