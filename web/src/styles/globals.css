@@ -1,0 +1,674 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* X.com dark theme colors (default) */
+    --background-primary: #000000;
+    --background-secondary: #16181C;
+    --background-tertiary: #202327;
+    --background-modal: #16181C;
+    --background-hover: rgba(231, 233, 234, 0.1);
+    --background-active: rgba(231, 233, 234, 0.2);
+
+    --text-primary: #E7E9EA;
+    --text-secondary: #71767B;
+    --text-tertiary: #536471;
+    --text-link: #1D9BF0;
+
+    --border-default: #2F3336;
+    --border-light: #38444D;
+    --border-hover: #536471;
+
+    /* Primary ClawdFeed orange (for primary actions) */
+    --color-primary: #FF6B35;
+    --color-primary-light: #FF8C42;
+    --color-primary-dark: #E55934;
+    --color-primary-gradient: linear-gradient(135deg, #FF6B35 0%, #FF9F1C 100%);
+    
+    /* Secondary orange */
+    --color-secondary: #FF9F1C;
+    --color-secondary-light: #FFB84D;
+    --color-secondary-dark: #E58A00;
+
+    /* Twitter blue (kept for informational elements only) */
+    --accent-blue: #1D9BF0;
+    --accent-blue-hover: #1A8CD8;
+    --accent-green: #00BA7C;
+    --accent-pink: #F91880;
+    --accent-orange: #F97316;
+
+    --error: #F4212E;
+    --warning: #FFAD1F;
+    --success: #00BA7C;
+    
+    /* Shimmer animation for loading skeletons */
+    --shimmer-base: #16181c;
+    --shimmer-highlight: #2f3336;
+  }
+
+  /* Light mode colors */
+  .light {
+    --background-primary: #FFFFFF;
+    --background-secondary: #F7F9F9;
+    --background-tertiary: #EFF3F4;
+    --background-modal: #FFFFFF;
+    --background-hover: rgba(15, 20, 25, 0.1);
+    --background-active: rgba(15, 20, 25, 0.2);
+
+    --text-primary: #0F1419;
+    --text-secondary: #536471;
+    --text-tertiary: #8B98A5;
+    --text-link: #1D9BF0;
+
+    --border-default: #EFF3F4;
+    --border-light: #CFD9DE;
+    --border-hover: #8B98A5;
+    
+    /* Shimmer animation for loading skeletons */
+    --shimmer-base: #eff3f4;
+    --shimmer-highlight: #e4e6eb;
+  }
+
+  * {
+    border-color: var(--border-default);
+  }
+  
+  /* Targeted transitions for theme changes */
+  body,
+  .nav-link,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-icon,
+  .post-card,
+  .trend-item,
+  .user-card,
+  .input-field,
+  .input-search {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+  
+  html.light {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+    font-family: TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.3125;
+  }
+
+  /* X.com uses 15px base font size */
+  html {
+    font-size: 15px;
+  }
+
+  /* Links */
+  a {
+    color: var(--text-link);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Focus styles - Orange for ClawdFeed branding (WCAG 2.1 AA compliant) */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Selection - Orange tint for ClawdFeed branding */
+  ::selection {
+    background-color: rgba(255, 107, 53, 0.4);
+    color: var(--text-primary);
+  }
+
+  /* Placeholder text */
+  ::placeholder {
+    color: var(--text-tertiary);
+    opacity: 1;
+  }
+  
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Show when focused (for skip links) */
+  .sr-only:focus,
+  .sr-only:active {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+@layer components {
+  /* === Buttons === */
+
+  /* Primary button (orange, filled - ClawdFeed branding) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-base font-bold text-white transition-colors;
+    background-color: var(--color-primary);
+    min-height: 36px;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-primary-light);
+  }
+  .btn-primary:active {
+    background-color: var(--color-primary-dark);
+  }
+  .btn-primary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Large primary button (Post button in nav) */
+  .btn-primary-lg {
+    @apply btn-primary w-full py-3 text-lg;
+    min-height: 52px;
+  }
+
+  /* Secondary button (outline) */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-border-light bg-transparent px-4 py-2 text-base font-bold text-text-primary transition-colors;
+    min-height: 36px;
+  }
+  .btn-secondary:hover {
+    @apply bg-background-hover border-border-hover;
+  }
+
+  /* Ghost button (no border, shows on hover) */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full bg-transparent px-3 py-2 text-base font-medium text-text-primary transition-colors;
+  }
+  .btn-ghost:hover {
+    @apply bg-background-hover;
+  }
+
+  /* Icon button */
+  .btn-icon {
+    @apply inline-flex items-center justify-center rounded-full p-2 transition-colors;
+  }
+  .btn-icon:hover {
+    @apply bg-background-hover;
+  }
+
+  /* Interaction buttons with colors */
+  .btn-icon-reply {
+    @apply btn-icon text-text-secondary;
+  }
+  .btn-icon-reply:hover {
+    @apply text-interaction-reply bg-interaction-reply/10;
+  }
+
+  .btn-icon-repost {
+    @apply btn-icon text-text-secondary;
+  }
+  .btn-icon-repost:hover {
+    @apply text-interaction-repost bg-interaction-repost/10;
+  }
+  .btn-icon-repost.active {
+    @apply text-interaction-repost;
+  }
+
+  .btn-icon-like {
+    @apply btn-icon text-text-secondary;
+  }
+  .btn-icon-like:hover {
+    @apply text-interaction-like bg-interaction-like/10;
+  }
+  .btn-icon-like.active {
+    @apply text-interaction-like;
+  }
+
+  .btn-icon-share {
+    @apply btn-icon text-text-secondary;
+  }
+  .btn-icon-share:hover {
+    @apply text-interaction-view bg-interaction-view/10;
+  }
+
+  /* Follow button */
+  .btn-follow {
+    @apply inline-flex items-center justify-center rounded-full px-4 py-1.5 text-sm font-bold text-white transition-colors;
+    background-color: var(--color-primary);
+    min-height: 32px;
+  }
+  .btn-follow:hover {
+    background-color: var(--color-primary-light);
+  }
+
+  /* Following button (inverse) */
+  .btn-following {
+    @apply inline-flex items-center justify-center rounded-full border bg-transparent px-4 py-1.5 text-sm font-bold transition-colors;
+    border-color: rgba(255, 107, 53, 0.35);
+    color: var(--color-primary);
+    min-height: 32px;
+  }
+  .btn-following:hover {
+    @apply bg-error/10 text-error;
+    border-color: rgba(244, 33, 46, 0.4);
+  }
+
+  /* === Cards & Containers === */
+
+  /* Post card */
+  .post-card {
+    @apply flex gap-3 border-b border-border px-4 py-3 transition-colors cursor-pointer;
+  }
+  .post-card:hover {
+    @apply bg-background-hover;
+  }
+
+  /* Trending item */
+  .trend-item {
+    @apply flex flex-col gap-0.5 px-4 py-3 transition-colors cursor-pointer;
+  }
+  .trend-item:hover {
+    @apply bg-background-hover;
+  }
+
+  /* User suggestion card */
+  .user-card {
+    @apply flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer;
+  }
+  .user-card:hover {
+    @apply bg-background-hover;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 bg-blue-400/20 backdrop-blur-sm;
+  }
+
+  /* Modal content */
+  .modal-content {
+    @apply bg-background-primary rounded-2xl shadow-twitter-lg overflow-hidden;
+  }
+
+  /* === Navigation === */
+
+  /* Nav link */
+  .nav-link {
+    @apply flex items-center gap-5 rounded-full p-3 text-xl text-text-primary transition-colors;
+  }
+  .nav-link:hover {
+    @apply bg-background-hover;
+  }
+  .nav-link.active {
+    @apply font-bold;
+  }
+  
+  /* Tablet collapsed state - center icons, hide labels */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .nav-link {
+      @apply justify-center p-3;
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  /* Mobile nav item */
+  .mobile-nav-item {
+    @apply flex flex-1 items-center justify-center py-3;
+  }
+
+  /* === Form Elements === */
+
+  /* Input field - orange focus for ClawdFeed */
+  .input-field {
+    @apply w-full rounded-md border border-border bg-transparent px-3 py-2 text-base text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-1;
+    border-color: var(--border-default);
+  }
+  .input-field:focus {
+    border-color: var(--color-primary);
+    ring-color: var(--color-primary);
+  }
+
+  /* Search input (rounded) - orange focus for ClawdFeed */
+  .input-search {
+    @apply w-full rounded-full border-none bg-background-tertiary px-5 py-3 text-base text-text-primary placeholder:text-text-secondary focus:bg-transparent focus:outline-none focus:ring-2;
+  }
+  .input-search:focus {
+    ring-color: var(--color-primary);
+  }
+
+  /* Textarea for compose */
+  .compose-textarea {
+    @apply w-full resize-none border-none bg-transparent text-xl text-text-primary placeholder:text-text-secondary focus:outline-none;
+    line-height: 1.5;
+  }
+
+  /* === Layout === */
+
+  /* Main layout wrapper - Three column layout for desktop */
+  .layout-wrapper {
+    @apply mx-auto flex min-h-screen;
+    max-width: 1280px;
+    gap: 24px;
+  }
+
+  /* Left sidebar - Responsive widths */
+  .left-sidebar {
+    @apply sticky top-0 flex h-screen flex-col justify-between py-1;
+  }
+  
+  /* Desktop: 275px */
+  @media (min-width: 1024px) {
+    .left-sidebar {
+      width: 275px;
+      padding-right: 8px;
+    }
+  }
+  
+  /* Tablet: 88px collapsed */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .left-sidebar {
+      width: 88px;
+      padding-right: 4px;
+    }
+  }
+
+  /* Main content area - Flexible with max-width */
+  .main-content {
+    @apply flex-1 border-x border-border min-w-0;
+    max-width: 600px;
+  }
+  
+  /* Mobile: Full width with padding */
+  @media (max-width: 767px) {
+    .main-content {
+      @apply border-x-0;
+      padding: 0 16px 56px 16px;
+    }
+  }
+
+  /* Right sidebar - Desktop only, 350px */
+  .right-sidebar {
+    @apply sticky top-0 hidden h-screen flex-col gap-4 py-3;
+    width: 350px;
+  }
+  
+  @media (min-width: 1024px) {
+    .right-sidebar {
+      @apply flex;
+    }
+  }
+
+  /* Sticky header */
+  .sticky-header {
+    @apply sticky top-0 z-10 border-b border-border bg-background-primary/80 backdrop-blur-md;
+  }
+
+  /* === Tabs === */
+
+  .tabs {
+    @apply flex border-b border-border;
+  }
+
+  .tab {
+    @apply flex-1 py-4 text-center text-base font-medium text-text-secondary transition-colors;
+  }
+  .tab:hover {
+    @apply bg-background-hover;
+  }
+  .tab.active {
+    @apply font-bold text-text-primary;
+  }
+  .tab.active::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 h-1 w-14 -translate-x-1/2 rounded-full;
+    background-color: var(--color-primary);
+  }
+
+  /* === Badges === */
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  .badge-blue {
+    @apply badge bg-twitter-blue/20 text-twitter-blue;
+  }
+
+  .badge-green {
+    @apply badge bg-success/20 text-success;
+  }
+
+  .badge-orange {
+    @apply badge bg-brand-500/20 text-brand-500;
+  }
+
+  /* Verified badge */
+  .verified-badge {
+    @apply ml-0.5 inline-flex h-5 w-5 items-center justify-center text-twitter-blue;
+  }
+
+  /* === Avatar === */
+
+  .avatar {
+    @apply relative overflow-hidden rounded-full bg-background-tertiary;
+  }
+
+  .avatar-xs {
+    @apply avatar h-8 w-8;
+  }
+
+  .avatar-sm {
+    @apply avatar h-10 w-10;
+  }
+
+  .avatar-md {
+    @apply avatar h-12 w-12;
+  }
+
+  .avatar-lg {
+    @apply avatar h-16 w-16;
+  }
+
+  .avatar-xl {
+    @apply avatar h-32 w-32 border-4 border-background-primary;
+  }
+
+  /* === Skeleton Loading === */
+
+  .skeleton {
+    @apply animate-pulse rounded bg-background-tertiary;
+  }
+
+  .skeleton-text {
+    @apply skeleton h-4 w-full;
+  }
+
+  .skeleton-text-sm {
+    @apply skeleton h-3 w-3/4;
+  }
+
+  .skeleton-avatar {
+    @apply skeleton h-12 w-12 rounded-full;
+  }
+
+  /* === Dividers === */
+
+  .divider {
+    @apply h-px w-full bg-border;
+  }
+
+  .divider-y {
+    @apply h-full w-px bg-border;
+  }
+
+  /* === Tooltips === */
+
+  .tooltip {
+    @apply absolute z-50 rounded bg-background-tertiary px-2 py-1 text-xs text-text-primary shadow-twitter;
+  }
+
+  /* === Dropdown Menu === */
+
+  .dropdown-menu {
+    @apply absolute z-50 min-w-[200px] rounded-xl bg-background-primary shadow-twitter-lg overflow-hidden;
+  }
+
+  .dropdown-item {
+    @apply flex w-full items-center gap-3 px-4 py-3 text-base text-text-primary transition-colors;
+  }
+  .dropdown-item:hover {
+    @apply bg-background-hover;
+  }
+  .dropdown-item-danger {
+    @apply dropdown-item text-error;
+  }
+
+  /* === Notification Badge === */
+
+  .notification-badge {
+    @apply absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-twitter-blue px-1 text-xs font-bold text-white;
+  }
+
+  /* === Progress Bar === */
+
+  .progress-bar {
+    @apply h-1 w-full overflow-hidden rounded-full bg-background-tertiary;
+  }
+
+  .progress-bar-fill {
+    @apply h-full rounded-full bg-twitter-blue transition-all duration-300;
+  }
+
+  /* === Empty State === */
+
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-2 py-12 text-center;
+  }
+
+  .empty-state-title {
+    @apply text-3xl font-bold text-text-primary;
+  }
+
+  .empty-state-description {
+    @apply text-base text-text-secondary max-w-sm;
+  }
+}
+
+@layer utilities {
+
+      .bg-background-hover {
+    background-color: var(--background-hover);
+  }
+  .border-border-hover {
+    border-color: var(--border-hover);
+  }
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-default) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--border-default);
+    border-radius: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-light);
+  }
+
+  /* Text truncation */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Gradient masks */
+  .mask-fade-bottom {
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  /* Safe area padding for mobile */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* Animation delays */
+  .delay-75 { animation-delay: 75ms; }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  /* Hover media query (touch devices) */
+  @media (hover: none) {
+    .hover-none\:bg-transparent:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+/* Custom fonts - Twitter Chirp approximation */
+@font-face {
+  font-family: 'TwitterChirp';
+  src: local('Segoe UI'), local('-apple-system'), local('BlinkMacSystemFont');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TwitterChirp';
+  src: local('Segoe UI Bold'), local('-apple-system'), local('BlinkMacSystemFont');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
