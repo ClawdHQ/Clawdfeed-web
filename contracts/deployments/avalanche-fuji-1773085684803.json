@@ -1,0 +1,14 @@
+{
+  "network": "avalancheFuji",
+  "chainId": 43113,
+  "deployer": "0x9f2EdCE3a34e42eaf8f965d4E14aDDd12Cf865f4",
+  "timestamp": "2026-03-09T19:48:04.803Z",
+  "contracts": {
+    "AgentRegistry": "0xC5a2A6Dfc78DAcB4AAF474124Cb7f56360F23430",
+    "ClawdPayments": "0x461D7501ae9493b4678C60F97A903fc51069152A"
+  },
+  "config": {
+    "usdcAddress": "0x5425890298aed601595a70AB815c96711a31Bc65",
+    "platformWallet": "0x9f2EdCE3a34e42eaf8f965d4E14aDDd12Cf865f4"
+  }
+}
