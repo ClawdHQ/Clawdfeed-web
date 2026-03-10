@@ -613,7 +613,7 @@ function buildHashtags(posts: Array<{ content: string | null; likeCount: number 
         }));
 }
 
-router.post('/nonce/request', async (req, res) => {
+router.post('/nonce/request', async (req: Request, res: Response) => {
     const walletAddress = req.body?.walletAddress;
     if (!walletAddress) {
         return sendError(res, 400, 'BAD_REQUEST', 'walletAddress is required');
@@ -630,14 +630,14 @@ router.post('/nonce/request', async (req, res) => {
     sendData(res, { nonce, message, expires_in: 300 });
 });
 
-router.post('/nonce/verify', async (req, res) => {
+router.post('/nonce/verify', async (req: Request, res: Response) => {
     sendData(res, {
         verified: true,
         walletAddress: req.body?.walletAddress ?? null,
     });
 });
 
-router.post('/auth/human/sync', async (req, res) => {
+router.post('/auth/human/sync', async (req: Request, res: Response) => {
     const walletAddress = req.body?.walletAddress;
     if (!walletAddress) {
         return sendError(res, 400, 'BAD_REQUEST', 'walletAddress is required');
@@ -680,7 +680,7 @@ router.post('/auth/human/sync', async (req, res) => {
     });
 });
 
-router.get('/auth/me', async (req, res) => {
+router.get('/auth/me', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -705,7 +705,7 @@ router.get('/auth/me', async (req, res) => {
     });
 });
 
-router.patch('/auth/me', async (req, res) => {
+router.patch('/auth/me', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -736,7 +736,7 @@ router.patch('/auth/me', async (req, res) => {
     });
 });
 
-router.delete('/auth/me', async (req, res) => {
+router.delete('/auth/me', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -746,7 +746,7 @@ router.delete('/auth/me', async (req, res) => {
     res.status(204).end();
 });
 
-router.patch('/auth/human/profile', async (req, res) => {
+router.patch('/auth/human/profile', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -779,7 +779,7 @@ router.patch('/auth/human/profile', async (req, res) => {
     });
 });
 
-router.get('/feed/for-you', async (req, res) => {
+router.get('/feed/for-you', async (req: Request, res: Response) => {
     sendData(
         res,
         await fetchPosts({
@@ -791,7 +791,7 @@ router.get('/feed/for-you', async (req, res) => {
     );
 });
 
-router.get('/feed/following', async (req, res) => {
+router.get('/feed/following', async (req: Request, res: Response) => {
     sendData(
         res,
         await fetchPosts({
@@ -803,7 +803,7 @@ router.get('/feed/following', async (req, res) => {
     );
 });
 
-router.get('/feed/trending', async (req, res) => {
+router.get('/feed/trending', async (req: Request, res: Response) => {
     sendData(
         res,
         await fetchPosts({
@@ -814,7 +814,7 @@ router.get('/feed/trending', async (req, res) => {
     );
 });
 
-router.get('/feed/explore', async (req, res) => {
+router.get('/feed/explore', async (req: Request, res: Response) => {
     sendData(
         res,
         await fetchPosts({
@@ -825,7 +825,7 @@ router.get('/feed/explore', async (req, res) => {
     );
 });
 
-router.post('/agents/register', async (req, res) => {
+router.post('/agents/register', async (req: Request, res: Response) => {
     const { handle, name, description, avatar_url, owner_address } = req.body;
     if (!handle || !name) {
         return sendError(res, 400, 'BAD_REQUEST', 'handle and name are required');
@@ -874,7 +874,7 @@ router.post('/agents/register', async (req, res) => {
     }
 });
 
-router.post('/agents/claim', async (req, res) => {
+router.post('/agents/claim', async (req: Request, res: Response) => {
     try {
         const walletAddress = req.body?.walletAddress;
         const claimCode = req.body?.claimCode;
@@ -931,7 +931,7 @@ router.post('/agents/claim', async (req, res) => {
     }
 });
 
-router.post('/agents/verify-tweet', async (req, res) => {
+router.post('/agents/verify-tweet', async (req: Request, res: Response) => {
     try {
         const agentId = req.body?.agentId;
         const tweetUrl = req.body?.tweetUrl;
@@ -1030,7 +1030,7 @@ router.post('/agents/verify-tweet', async (req, res) => {
     }
 });
 
-router.post('/agents/claim/finalize', async (req, res) => {
+router.post('/agents/claim/finalize', async (req: Request, res: Response) => {
     try {
         const agentId = req.body?.agentId;
         const walletAddress = req.body?.walletAddress;
@@ -1081,7 +1081,7 @@ router.post('/agents/claim/finalize', async (req, res) => {
     }
 });
 
-router.get('/agents/suggested', async (_req, res) => {
+router.get('/agents/suggested', async (_req: Request, res: Response) => {
     const agents = await prisma.agent.findMany({
         take: 6,
         orderBy: [{ currentScore: 'desc' }, { followerCount: 'desc' }],
@@ -1089,7 +1089,7 @@ router.get('/agents/suggested', async (_req, res) => {
     sendData(res, agents.map(toAgentProfile));
 });
 
-router.get('/agents/discover', async (req, res) => {
+router.get('/agents/discover', async (req: Request, res: Response) => {
     const limit = Math.min(parseInt((req.query.limit as string) || '20', 10), 50);
     const agents = await prisma.agent.findMany({
         take: limit,
@@ -1098,7 +1098,7 @@ router.get('/agents/discover', async (req, res) => {
     sendData(res, agents.map(toAgentProfile));
 });
 
-router.get('/agents/handles', async (_req, res) => {
+router.get('/agents/handles', async (_req: Request, res: Response) => {
     const agents = await prisma.agent.findMany({
         select: { handle: true },
         orderBy: { handle: 'asc' },
@@ -1107,7 +1107,7 @@ router.get('/agents/handles', async (_req, res) => {
     sendData(res, agents.map((agent) => agent.handle));
 });
 
-router.get('/agents', async (req, res) => {
+router.get('/agents', async (req: Request, res: Response) => {
     const limit = Math.min(parseInt((req.query.limit as string) || '25', 10), 100);
     const agents = await prisma.agent.findMany({
         take: limit,
@@ -1116,7 +1116,7 @@ router.get('/agents', async (req, res) => {
     sendData(res, agents.map(toAgentProfile));
 });
 
-router.get('/agents/me', async (req, res) => {
+router.get('/agents/me', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1125,7 +1125,7 @@ router.get('/agents/me', async (req, res) => {
     sendData(res, toAgentProfile(agent));
 });
 
-router.patch('/agents/me', async (req, res) => {
+router.patch('/agents/me', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1143,7 +1143,7 @@ router.patch('/agents/me', async (req, res) => {
     sendData(res, toAgentProfile(updatedAgent));
 });
 
-router.get('/agents/me/posts', async (req, res) => {
+router.get('/agents/me/posts', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1159,7 +1159,7 @@ router.get('/agents/me/posts', async (req, res) => {
     sendData(res, paginated(posts.map(toPostData), null, false));
 });
 
-router.post('/agents/me/dm/toggle', async (req, res) => {
+router.post('/agents/me/dm/toggle', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1173,7 +1173,7 @@ router.post('/agents/me/dm/toggle', async (req, res) => {
     });
 });
 
-router.post('/agents/me/rotate-key', async (req, res) => {
+router.post('/agents/me/rotate-key', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1193,7 +1193,7 @@ router.post('/agents/me/rotate-key', async (req, res) => {
     });
 });
 
-router.post('/agents/me/revoke-key', async (req, res) => {
+router.post('/agents/me/revoke-key', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1206,7 +1206,7 @@ router.post('/agents/me/revoke-key', async (req, res) => {
     });
 });
 
-router.post('/agents/me/reactivate', async (req, res) => {
+router.post('/agents/me/reactivate', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1218,7 +1218,7 @@ router.post('/agents/me/reactivate', async (req, res) => {
     });
 });
 
-router.get('/agents/me/usage', async (req, res) => {
+router.get('/agents/me/usage', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1248,7 +1248,7 @@ router.get('/agents/me/usage', async (req, res) => {
     });
 });
 
-router.get('/agents/:handle/posts', async (req, res) => {
+router.get('/agents/:handle/posts', async (req: Request, res: Response) => {
     const agent = await prisma.agent.findUnique({
         where: { handle: req.params.handle },
     });
@@ -1271,15 +1271,15 @@ router.get('/agents/:handle/posts', async (req, res) => {
     sendData(res, paginated(results.map(toPostData), hasMore ? results[results.length - 1]?.id ?? null : null, hasMore));
 });
 
-router.get('/agents/:handle/followers', async (_req, res) => {
+router.get('/agents/:handle/followers', async (_req: Request, res: Response) => {
     sendData(res, paginated([], null, false));
 });
 
-router.get('/agents/:handle/following', async (_req, res) => {
+router.get('/agents/:handle/following', async (_req: Request, res: Response) => {
     sendData(res, paginated([], null, false));
 });
 
-router.get('/agents/:handle', async (req, res) => {
+router.get('/agents/:handle', async (req: Request, res: Response) => {
     const agent = await prisma.agent.findUnique({
         where: { handle: req.params.handle },
     });
@@ -1290,7 +1290,7 @@ router.get('/agents/:handle', async (req, res) => {
     sendData(res, toAgentProfile(agent));
 });
 
-router.post('/agents/:handle/follow', async (req, res) => {
+router.post('/agents/:handle/follow', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -1315,7 +1315,7 @@ router.post('/agents/:handle/follow', async (req, res) => {
     sendData(res, { followed: true });
 });
 
-router.delete('/agents/:handle/follow', async (req, res) => {
+router.delete('/agents/:handle/follow', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -1340,7 +1340,7 @@ router.delete('/agents/:handle/follow', async (req, res) => {
     sendData(res, { unfollowed: true });
 });
 
-router.post('/posts', async (req, res) => {
+router.post('/posts', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1370,7 +1370,7 @@ router.post('/posts', async (req, res) => {
     sendData(res, toPostData(post), 201);
 });
 
-router.get('/posts/top', async (req, res) => {
+router.get('/posts/top', async (req: Request, res: Response) => {
     const limit = Math.min(parseInt((req.query.limit as string) || '20', 10), 50);
     const posts = await prisma.post.findMany({
         where: { isDeleted: false },
@@ -1382,7 +1382,7 @@ router.get('/posts/top', async (req, res) => {
     sendData(res, posts.map(toPostData));
 });
 
-router.get('/posts/:id/replies', async (req, res) => {
+router.get('/posts/:id/replies', async (req: Request, res: Response) => {
     const replies = await prisma.post.findMany({
         where: { replyToId: req.params.id, isDeleted: false },
         include: { agent: true },
@@ -1393,7 +1393,7 @@ router.get('/posts/:id/replies', async (req, res) => {
     sendData(res, paginated(replies.map(toPostData), null, false));
 });
 
-router.get('/posts/:id', async (req, res) => {
+router.get('/posts/:id', async (req: Request, res: Response) => {
     const post = await prisma.post.findUnique({
         where: { id: req.params.id },
         include: { agent: true },
@@ -1405,7 +1405,7 @@ router.get('/posts/:id', async (req, res) => {
     sendData(res, toPostData(post));
 });
 
-router.patch('/posts/:id', async (req, res) => {
+router.patch('/posts/:id', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1434,7 +1434,7 @@ router.patch('/posts/:id', async (req, res) => {
     sendData(res, toPostData(updatedPost));
 });
 
-router.delete('/posts/:id', async (req, res) => {
+router.delete('/posts/:id', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Agent API key required');
@@ -1462,7 +1462,7 @@ router.delete('/posts/:id', async (req, res) => {
     res.status(204).end();
 });
 
-router.post('/posts/:id/like', async (req, res) => {
+router.post('/posts/:id/like', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (human) {
         await prisma.interaction.create({
@@ -1478,7 +1478,7 @@ router.post('/posts/:id/like', async (req, res) => {
     sendData(res, { liked: true });
 });
 
-router.delete('/posts/:id/like', async (req, res) => {
+router.delete('/posts/:id/like', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (human) {
         await prisma.interaction.deleteMany({
@@ -1494,7 +1494,7 @@ router.delete('/posts/:id/like', async (req, res) => {
     sendData(res, { unliked: true });
 });
 
-router.post('/posts/:id/repost', async (req, res) => {
+router.post('/posts/:id/repost', async (req: Request, res: Response) => {
     const agent = await getAgentFromRequest(req);
     if (!agent) {
         return sendError(res, 403, 'AGENT_ONLY', 'Only agents can repost on ClawdFeed.');
@@ -1508,7 +1508,7 @@ router.post('/posts/:id/repost', async (req, res) => {
     sendData(res, { reposted: true });
 });
 
-router.post('/posts/:id/bookmark', async (req, res) => {
+router.post('/posts/:id/bookmark', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -1521,7 +1521,7 @@ router.post('/posts/:id/bookmark', async (req, res) => {
     sendData(res, { bookmarked: true });
 });
 
-router.delete('/posts/:id/bookmark', async (req, res) => {
+router.delete('/posts/:id/bookmark', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -1534,7 +1534,7 @@ router.delete('/posts/:id/bookmark', async (req, res) => {
     sendData(res, { unbookmarked: true });
 });
 
-router.get('/bookmarks', async (req, res) => {
+router.get('/bookmarks', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendData(res, paginated([], null, false));
@@ -1544,7 +1544,7 @@ router.get('/bookmarks', async (req, res) => {
     sendData(res, paginated(posts, null, false));
 });
 
-router.get('/search', async (req, res) => {
+router.get('/search', async (req: Request, res: Response) => {
     const query = ((req.query.query as string) || (req.query.q as string) || '').trim();
     if (query.length < 2) {
         return sendData(res, { agents: [], posts: [] });
@@ -1577,7 +1577,7 @@ router.get('/search', async (req, res) => {
     });
 });
 
-router.get('/search/agents', async (req, res) => {
+router.get('/search/agents', async (req: Request, res: Response) => {
     const query = ((req.query.query as string) || (req.query.q as string) || '').trim();
     if (query.length < 2) {
         return sendData(res, { agents: [] });
@@ -1596,7 +1596,7 @@ router.get('/search/agents', async (req, res) => {
     sendData(res, { agents: agents.map(toAgentProfile) });
 });
 
-router.get('/search/posts', async (req, res) => {
+router.get('/search/posts', async (req: Request, res: Response) => {
     const query = ((req.query.query as string) || (req.query.q as string) || '').trim();
     if (query.length < 2) {
         return sendData(res, { posts: [] });
@@ -1615,7 +1615,7 @@ router.get('/search/posts', async (req, res) => {
     sendData(res, { posts: posts.map(toPostData) });
 });
 
-router.get('/trending/hashtags', async (req, res) => {
+router.get('/trending/hashtags', async (req: Request, res: Response) => {
     const limit = Math.min(parseInt(String(req.query.limit || '10'), 10) || 10, 20);
     const posts = await prisma.post.findMany({
         where: {
@@ -1630,7 +1630,7 @@ router.get('/trending/hashtags', async (req, res) => {
     sendData(res, trends);
 });
 
-router.get('/explore/trending', async (req, res) => {
+router.get('/explore/trending', async (req: Request, res: Response) => {
     const trendLimit = Math.min(parseInt(String(req.query.limit || '10'), 10) || 10, 20);
     const topAgents = await prisma.agent.findMany({
         take: 5,
@@ -1662,7 +1662,7 @@ router.get('/explore/trending', async (req, res) => {
     });
 });
 
-router.get('/messages/conversations', async (req, res) => {
+router.get('/messages/conversations', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendData(res, paginated([], null, false));
@@ -1721,7 +1721,7 @@ router.get('/messages/conversations', async (req, res) => {
     );
 });
 
-router.get('/messages/conversations/:id', async (req, res) => {
+router.get('/messages/conversations/:id', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -1763,7 +1763,7 @@ router.get('/messages/conversations/:id', async (req, res) => {
     );
 });
 
-router.post('/messages', async (req, res) => {
+router.post('/messages', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -1807,31 +1807,31 @@ router.post('/messages', async (req, res) => {
     }, 201);
 });
 
-router.post('/messages/conversations/:id/read', async (_req, res) => {
+router.post('/messages/conversations/:id/read', async (_req: Request, res: Response) => {
     sendData(res, { read: true });
 });
 
-router.get('/messages/unread-count', async (_req, res) => {
+router.get('/messages/unread-count', async (_req: Request, res: Response) => {
     sendData(res, { count: 0 });
 });
 
-router.get('/notifications', async (_req, res) => {
+router.get('/notifications', async (_req: Request, res: Response) => {
     sendData(res, paginated([], null, false));
 });
 
-router.post('/notifications/:id/read', async (_req, res) => {
+router.post('/notifications/:id/read', async (_req: Request, res: Response) => {
     sendData(res, { read: true });
 });
 
-router.post('/notifications/read-all', async (_req, res) => {
+router.post('/notifications/read-all', async (_req: Request, res: Response) => {
     sendData(res, { read: true });
 });
 
-router.get('/notifications/unread-count', async (_req, res) => {
+router.get('/notifications/unread-count', async (_req: Request, res: Response) => {
     sendData(res, { count: 0 });
 });
 
-router.get('/subscription', async (req, res) => {
+router.get('/subscription', async (req: Request, res: Response) => {
     try {
         const human = await getHumanFromRequest(req);
         const { currentSubscription } = await syncHumanSubscriptionTier(human);
@@ -1841,16 +1841,16 @@ router.get('/subscription', async (req, res) => {
     }
 });
 
-router.post('/subscription/checkout', async (_req, res) => {
+router.post('/subscription/checkout', async (_req: Request, res: Response) => {
     const webBaseUrl = process.env.AVALANCHE_WEB_BASE_URL?.replace(/\/$/, '');
     sendData(res, { url: webBaseUrl ? `${webBaseUrl}${SUBSCRIPTION_CHECKOUT_PATH}` : SUBSCRIPTION_CHECKOUT_PATH });
 });
 
-router.post('/subscription/cancel', async (_req, res) => {
+router.post('/subscription/cancel', async (_req: Request, res: Response) => {
     res.status(204).end();
 });
 
-router.get('/subscription/invoices', async (req, res) => {
+router.get('/subscription/invoices', async (req: Request, res: Response) => {
     try {
         const human = await getHumanFromRequest(req);
         const { subscriptionHistory } = await syncHumanSubscriptionTier(human);
@@ -1866,7 +1866,7 @@ router.get('/subscription/invoices', async (req, res) => {
     }
 });
 
-router.get('/humans/profile', async (req, res) => {
+router.get('/humans/profile', async (req: Request, res: Response) => {
     try {
         const human = await getHumanFromRequest(req);
         if (!human) {
@@ -1885,7 +1885,7 @@ router.get('/humans/profile', async (req, res) => {
     }
 });
 
-router.get('/humans/tier-status', async (req, res) => {
+router.get('/humans/tier-status', async (req: Request, res: Response) => {
     try {
         const human = await getHumanFromRequest(req);
         const { currentSubscription } = await syncHumanSubscriptionTier(human);
@@ -1895,7 +1895,7 @@ router.get('/humans/tier-status', async (req, res) => {
     }
 });
 
-router.get('/humans/subscriptions', async (req, res) => {
+router.get('/humans/subscriptions', async (req: Request, res: Response) => {
     try {
         const human = await getHumanFromRequest(req);
         if (!human) {
@@ -1915,7 +1915,7 @@ router.get('/humans/subscriptions', async (req, res) => {
     }
 });
 
-router.post('/humans/upgrade-pro', async (req, res) => {
+router.post('/humans/upgrade-pro', async (req: Request, res: Response) => {
     try {
         const verifiedSubscription = await verifySubscriptionPaymentTx({
             txHash: String(req.body?.transactionHash || ''),
@@ -1948,7 +1948,7 @@ router.post('/humans/upgrade-pro', async (req, res) => {
     }
 });
 
-router.get('/humans/following', async (req, res) => {
+router.get('/humans/following', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendData(res, paginated([], null, false));
@@ -1964,7 +1964,7 @@ router.get('/humans/following', async (req, res) => {
     sendData(res, paginated(follows.map((follow) => toAgentProfile(follow.agent)), null, false));
 });
 
-router.post('/humans/follow/:handle', async (req, res) => {
+router.post('/humans/follow/:handle', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -2000,7 +2000,7 @@ router.post('/humans/follow/:handle', async (req, res) => {
     sendData(res, { success: true });
 });
 
-router.delete('/humans/follow/:handle', async (req, res) => {
+router.delete('/humans/follow/:handle', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -2027,7 +2027,7 @@ router.delete('/humans/follow/:handle', async (req, res) => {
     sendData(res, { success: true });
 });
 
-router.post('/humans/dm/send', async (req, res) => {
+router.post('/humans/dm/send', async (req: Request, res: Response) => {
     const human = await getHumanFromRequest(req);
     if (!human) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -2071,7 +2071,7 @@ router.post('/humans/dm/send', async (req, res) => {
     }, 201);
 });
 
-router.get('/claim/:token', async (req, res) => {
+router.get('/claim/:token', async (req: Request, res: Response) => {
     try {
         let agent = await prisma.agent.findFirst({
             where: { verificationCode: req.params.token },
@@ -2095,7 +2095,7 @@ router.get('/claim/:token', async (req, res) => {
     }
 });
 
-router.post('/claim/:token/verify', async (req, res) => {
+router.post('/claim/:token/verify', async (req: Request, res: Response) => {
     try {
         let agent = await prisma.agent.findFirst({
             where: { verificationCode: req.params.token },
@@ -2138,7 +2138,7 @@ router.post('/claim/:token/verify', async (req, res) => {
     }
 });
 
-router.get('/rankings/agent/:handle', async (req, res) => {
+router.get('/rankings/agent/:handle', async (req: Request, res: Response) => {
     const agents = await prisma.agent.findMany({
         orderBy: [{ currentScore: 'desc' }, { followerCount: 'desc' }],
     });
@@ -2163,7 +2163,7 @@ router.get('/rankings/agent/:handle', async (req, res) => {
     });
 });
 
-router.get('/rankings/:timeframe', async (req, res) => {
+router.get('/rankings/:timeframe', async (req: Request, res: Response) => {
     const agents = await prisma.agent.findMany({
         take: 25,
         orderBy: [{ currentScore: 'desc' }, { followerCount: 'desc' }],
@@ -2188,7 +2188,7 @@ router.get('/rankings/:timeframe', async (req, res) => {
     });
 });
 
-router.post('/tips/send', async (req, res) => {
+router.post('/tips/send', async (req: Request, res: Response) => {
     try {
         const agentHandle = req.body?.agent_handle;
         const amountUsd = Number(req.body?.amount_usd || 0);
@@ -2247,7 +2247,7 @@ router.post('/tips/send', async (req, res) => {
     }
 });
 
-router.post('/ads', async (req, res) => {
+router.post('/ads', async (req: Request, res: Response) => {
     try {
         const verifiedAd = await verifyAdPaymentTx({
             txHash: String(req.body?.txHash || req.body?.transactionHash || ''),
@@ -2270,7 +2270,7 @@ router.post('/ads', async (req, res) => {
     }
 });
 
-router.get('/ads', async (req, res) => {
+router.get('/ads', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     const status = typeof req.query.status === 'string' ? req.query.status : null;
     const type = typeof req.query.type === 'string' ? req.query.type : null;
@@ -2289,7 +2289,7 @@ router.get('/ads', async (req, res) => {
     });
 });
 
-router.post('/ads/create', async (req, res) => {
+router.post('/ads/create', async (req: Request, res: Response) => {
     try {
         const verifiedAd = await verifyAdPaymentTx({
             txHash: String(req.body?.txHash || req.body?.transactionHash || ''),
@@ -2312,7 +2312,7 @@ router.post('/ads/create', async (req, res) => {
     }
 });
 
-router.get('/ads/campaigns', async (req, res) => {
+router.get('/ads/campaigns', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     const status = typeof req.query.status === 'string' ? req.query.status : null;
 
@@ -2328,7 +2328,7 @@ router.get('/ads/campaigns', async (req, res) => {
     });
 });
 
-router.get('/ads/:id', async (req, res) => {
+router.get('/ads/:id', async (req: Request, res: Response) => {
     const campaign = adStore.get(req.params.id);
     if (!campaign) {
         return sendError(res, 404, 'NOT_FOUND', 'Campaign not found');
@@ -2337,7 +2337,7 @@ router.get('/ads/:id', async (req, res) => {
     sendData(res, campaign);
 });
 
-router.patch('/ads/:id', async (req, res) => {
+router.patch('/ads/:id', async (req: Request, res: Response) => {
     const wallet = getWalletFromRequest(req);
     if (!wallet) {
         return sendError(res, 401, 'UNAUTHORIZED', 'Wallet authentication required');
@@ -2371,7 +2371,7 @@ router.patch('/ads/:id', async (req, res) => {
     sendData(res, updatedCampaign);
 });
 
-router.post('/ads/:id/impression', async (req, res) => {
+router.post('/ads/:id/impression', async (req: Request, res: Response) => {
     const campaign = adStore.get(req.params.id);
     if (!campaign) {
         return sendError(res, 404, 'NOT_FOUND', 'Campaign not found');
@@ -2387,7 +2387,7 @@ router.post('/ads/:id/impression', async (req, res) => {
     sendData(res, { recorded: true });
 });
 
-router.post('/ads/:id/click', async (req, res) => {
+router.post('/ads/:id/click', async (req: Request, res: Response) => {
     const campaign = adStore.get(req.params.id);
     if (!campaign) {
         return sendError(res, 404, 'NOT_FOUND', 'Campaign not found');
@@ -2403,7 +2403,7 @@ router.post('/ads/:id/click', async (req, res) => {
     sendData(res, { recorded: true });
 });
 
-router.get('/earnings', async (_req, res) => {
+router.get('/earnings', async (_req: Request, res: Response) => {
     sendData(res, {
         total_earnings_cents: 0,
         pending_payout_cents: 0,
@@ -2416,11 +2416,11 @@ router.get('/earnings', async (_req, res) => {
     });
 });
 
-router.get('/admin/check', async (req, res) => {
+router.get('/admin/check', async (req: Request, res: Response) => {
     sendData(res, { isAdmin: isAdminRequest(req) });
 });
 
-router.get('/admin/stats', async (req, res) => {
+router.get('/admin/stats', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2445,7 +2445,7 @@ router.get('/admin/stats', async (req, res) => {
     });
 });
 
-router.get('/admin/agents', async (req, res) => {
+router.get('/admin/agents', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2463,7 +2463,7 @@ router.get('/admin/agents', async (req, res) => {
     });
 });
 
-router.post('/admin/agents/approve', async (req, res) => {
+router.post('/admin/agents/approve', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2487,7 +2487,7 @@ router.post('/admin/agents/approve', async (req, res) => {
     });
 });
 
-router.patch('/admin/agents/:agentId', async (req, res) => {
+router.patch('/admin/agents/:agentId', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2513,7 +2513,7 @@ router.patch('/admin/agents/:agentId', async (req, res) => {
     });
 });
 
-router.get('/admin/ads', async (req, res) => {
+router.get('/admin/ads', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2533,7 +2533,7 @@ router.get('/admin/ads', async (req, res) => {
     });
 });
 
-router.post('/admin/ads/approve', async (req, res) => {
+router.post('/admin/ads/approve', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2552,7 +2552,7 @@ router.post('/admin/ads/approve', async (req, res) => {
     });
 });
 
-router.post('/admin/ads/:id/pause', async (req, res) => {
+router.post('/admin/ads/:id/pause', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2566,7 +2566,7 @@ router.post('/admin/ads/:id/pause', async (req, res) => {
     sendData(res, { success: true, message: 'Campaign paused' });
 });
 
-router.post('/admin/ads/:id/resume', async (req, res) => {
+router.post('/admin/ads/:id/resume', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2580,7 +2580,7 @@ router.post('/admin/ads/:id/resume', async (req, res) => {
     sendData(res, { success: true, message: 'Campaign resumed' });
 });
 
-router.post('/admin/posts/moderate', async (req, res) => {
+router.post('/admin/posts/moderate', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2606,7 +2606,7 @@ router.post('/admin/posts/moderate', async (req, res) => {
     });
 });
 
-router.get('/admin/dm-eligible', async (req, res) => {
+router.get('/admin/dm-eligible', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2625,7 +2625,7 @@ router.get('/admin/dm-eligible', async (req, res) => {
     });
 });
 
-router.post('/admin/payouts/manual', async (req, res) => {
+router.post('/admin/payouts/manual', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2656,7 +2656,7 @@ router.post('/admin/payouts/manual', async (req, res) => {
     });
 });
 
-router.get('/admin/users', async (req, res) => {
+router.get('/admin/users', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2681,7 +2681,7 @@ router.get('/admin/users', async (req, res) => {
     });
 });
 
-router.get('/admin/payments', async (req, res) => {
+router.get('/admin/payments', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2718,7 +2718,7 @@ router.get('/admin/payments', async (req, res) => {
     });
 });
 
-router.post('/admin/distribute', async (req, res) => {
+router.post('/admin/distribute', async (req: Request, res: Response) => {
     if (!requireAdmin(req, res)) {
         return;
     }
@@ -2749,7 +2749,7 @@ router.post('/admin/distribute', async (req, res) => {
     });
 });
 
-apiUsersRoutes.get('/users/tier', async (req, res) => {
+apiUsersRoutes.get('/users/tier', async (req: Request, res: Response) => {
     try {
         const human = await getHumanFromRequest(req);
         const { human: syncedHuman, currentSubscription } = await syncHumanSubscriptionTier(human);
@@ -2763,7 +2763,7 @@ apiUsersRoutes.get('/users/tier', async (req, res) => {
     }
 });
 
-apiUsersRoutes.post('/users/upgrade-tier', async (req, res) => {
+apiUsersRoutes.post('/users/upgrade-tier', async (req: Request, res: Response) => {
     try {
         const verifiedSubscription = await verifySubscriptionPaymentTx({
             txHash: String(req.body?.txHash || req.body?.transactionHash || ''),
